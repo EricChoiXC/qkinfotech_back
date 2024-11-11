@@ -294,8 +294,11 @@ public class OrgSyncService {
         orgPost.setfNo(json.getString("fd_no"));
         orgPost.setfValid(json.getBoolean("fd_is_available"));
         if (json.containsKey("fd_parentid") && json.get("fd_parentid") != null) {
-            orgPost.setfOwner(orgElementService.getById(json.getString("fd_parentid")));
-            orgPost.setfHibernateIds(orgPost.getfOwner().getfHibernateIds() + "_" + orgPost.getfId());
+            OrgElement element = orgElementService.getById(json.getString("fd_parentid"));
+            if (element != null) {
+                orgPost.setfOwner(element);
+                orgPost.setfHibernateIds(element.getfHibernateIds() + "_" + orgPost.getfId());
+            }
         } else {
             orgPost.setfValid(false);
             orgPost.setfOwner(null);
@@ -441,8 +444,10 @@ public class OrgSyncService {
         if (StringUtil.isNotNull(eleJson.getString("fd_parentid"))) {
             String parentId = eleJson.getString("fd_parentid");
             OrgDept dept = orgDeptService.getById(parentId);
-            orgPerson.setfParent(dept);
-            orgPerson.setfHibernateIds(dept.getfHibernateIds() + "_" + orgPerson.getfId());
+            if (dept != null) {
+                orgPerson.setfParent(dept);
+                orgPerson.setfHibernateIds(dept.getfHibernateIds() + "_" + orgPerson.getfId());
+            }
         }
         orgPersonService.save(orgPerson);
     }

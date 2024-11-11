@@ -39,7 +39,6 @@ import com.qkinfotech.core.org.model.OrgPost;
 import com.qkinfotech.core.org.model.OrgPostMember;
 import com.qkinfotech.util.StringUtil;
 
-@Task(trigger = "cron:0 0 1 * * ?", group = "Org", name = "组织架构同步定时任务")
 public class OrgSyncTask implements ITask {
 
 	@Autowired

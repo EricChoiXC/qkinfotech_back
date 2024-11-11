@@ -51,9 +51,6 @@ public class AppsProjectMainHistoryController<T extends BaseEntity>{
 
     private TokenUtil tokenUtil;
 
-    @Autowired
-    private EkpToken ekpToken;
-
     @RequestMapping("/list")
     @ResponseBody
     public void list(HttpServletRequest request) throws Exception {

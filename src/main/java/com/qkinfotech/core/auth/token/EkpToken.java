@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Slf4j
-@Component
+/*@Component*/
 public class EkpToken implements IToken {
 
 	@Autowired

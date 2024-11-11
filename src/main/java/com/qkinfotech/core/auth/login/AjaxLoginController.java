@@ -62,9 +62,6 @@ public class AjaxLoginController {
 	@Autowired
 	private EkpConfig ekpConfig;
 	
-	@Autowired
-	private EkpToken ekpToken;
-
     @Autowired
     private SimpleService<SysUser> sysUserService;
 
@@ -95,7 +92,6 @@ public class AjaxLoginController {
         String loginName = loginInfo.substring(0, Integer.valueOf(nameStrength));
         String password = loginInfo.substring(Integer.valueOf(nameStrength));
         String errorMsg = "";
-        ekpToken.setTokenType("LRToken");
 
         /* 1.生成pm的token */
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -139,7 +135,6 @@ public class AjaxLoginController {
                 result.put("id", user.getfId());
                 result.put("username", URLEncoder.encode(user.getfLoginName()));
                 // result.put("ssoToken", pmToken);
-                ekpToken.putMap(pmToken, loginName);
                 doLogin(request2, response, loginName, pmToken);
             } else {
                 result.put("success", false);
@@ -170,7 +165,6 @@ public class AjaxLoginController {
                 result.put("id", user.getfId());
                 result.put("username", URLEncoder.encode(user.getfLoginName()));
                 // result.put("ssoToken", pmToken);
-                ekpToken.putMap(tokenJson.getString("tokenString"), tokenJson.getString("username"));
                 doLogin(request2, response, loginName, tokenJson.getString("tokenString"));
             } else {
                 result.put("success", false);
@@ -380,7 +374,6 @@ public class AjaxLoginController {
         String desStr = request.get("desStr");
         String id = request.get("id");
         String errorMsg = "";
-        ekpToken.setTokenType("LRToken");
 
         SysUser user = sysUserService.getById(id);
         if (user == null) {
@@ -417,7 +410,6 @@ public class AjaxLoginController {
                 result.put("LRToken", token);
                 result.put("username", URLEncoder.encode(user.getfLoginName()));
                 // result.put("ssoToken", pmToken);
-                ekpToken.putMap(tokenJson.getString("tokenString"), tokenJson.getString("username"));
                 doLogin(request2, response, user.getfLoginName(), tokenJson.getString("tokenString"));
             } else {
                 result.put("success", false);
@@ -498,7 +490,7 @@ public class AjaxLoginController {
         return data;
     }
 
-    @PostMapping("/pms/checkAuthentication")
+    /*@PostMapping("/pms/checkAuthentication")*/
     public void checkAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
         if (authentication != null) {
