@@ -1,0 +1,23 @@
+{
+   authorization: true,
+   sort: ["name", "age desc"],
+   pagesize: 15,
+   pagenum: 1,
+   query: [{
+	 eq : { "name", "jack"}
+   },{ 
+	 or : [
+	    { not : {"age", 5} },
+        { gt : { "age", 4} }
+     ]
+   
+   }]
+}   
+   
+   where name='jack' and (age <> 5 or age > 4)
+   
+   query: [
+      { field: "name", op: "eq", value: "jack" }
+      { "or": [    ] }
+   ]
+   

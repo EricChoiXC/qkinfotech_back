@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+	<!--<property name="LOG_HOME" value="/home/qks/log" />-->
+	<springProperty scopy="context" name="LOG_HOME" source="logging.path"/>
+
+	<!-- 控制台输出 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %class{50}#%method - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- 按照每天生成日志文件 -->
+	<appender name="FILE"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/%d{yyyy-MM,aux}/system.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy"></timeBasedFileNamingAndTriggeringPolicy>
+			<!--日志文件保留天数 -->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>
+	<!--日志异步到数据库 -->
+<!--	<appender name="DB" class="com.qkinfotech.core.log.appender.SysLogAppender">-->
+<!--		<driver>com.mysql.cj.jdbc.Driver</driver>-->
+<!--		<url>jdbc:mysql://127.0.0.1:3306/ttk?useUnicode=true&amp;characterEncoding=utf8&amp;cachePrepStmts=true&amp;useServerPrepStmts=true&amp;rewriteBatchedStatements=true</url>-->
+<!--		<username>root</username>-->
+<!--		<password>Aa123456</password>-->
+<!--		<batchSize>200</batchSize>-->
+<!--		<nodeName>qksevrer001</nodeName>-->
+<!--	</appender>-->
+
+	<springProperty scopy="context" name="DS_DRIVER" source="spring.datasource.driverClassName"/>
+	<springProperty scopy="context" name="DS_URL" source="spring.datasource.url"/>
+	<springProperty scopy="context" name="DS_USERNAME" source="spring.datasource.username"/>
+	<springProperty scopy="context" name="DS_PASSWORD" source="spring.datasource.password"/>
+	<springProperty scopy="context" name="LOG_NODE" source="application.node-name"/>
+
+	<appender name="DB" class="com.qkinfotech.core.log.appender.SysLogAppender">
+		<driver>${DS_DRIVER}</driver>
+		<url>${DS_URL}</url>
+		<username>${DS_USERNAME}</username>
+		<password>${DS_PASSWORD}</password>
+		<batchSize>200</batchSize>
+		<nodeName>${LOG_NODE}</nodeName>
+	</appender>
+
+
+	<!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+	<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
+	<logger name="org.hibernate.type.descriptor.sql.BasicExtractor"	level="DEBUG" />
+	<logger name="org.hibernate.SQL" level="INFO" />
+	<logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
+	<logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" />
+	<logger name="org.springframework.security" level="ERROR"/>
+	<logger name="com.alicp.jetcache.support.StatInfoLogger" level="ERROR"/>
+	<logger name="com.qkinfotech.core.log" level="ERROR" />
+	<logger name="com.qkinfotech" level="DEBUG" />
+
+	<!-- 日志输出级别 -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" level="DEBUG"/>
+		<appender-ref ref="FILE" />
+		<appender-ref ref="DB"  level="INFO"/>
+	</root>
+
+</configuration>

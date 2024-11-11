@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/main/app"/>
+	<classpathentry kind="src" path="src/main/jpa"/>
+	<classpathentry kind="src" path="src/main/log"/>
+	<classpathentry kind="src" path="src/main/mvc"/>
+	<classpathentry kind="src" path="src/main/queue"/>
+	<classpathentry kind="src" path="src/main/security"/>
+	<classpathentry kind="src" path="src/main/storage"/>
+	<classpathentry kind="src" path="src/main/task"/>
+	<classpathentry kind="src" path="src/main/util"/>
+	<classpathentry kind="src" path="src/main/i18n"/>
+	<classpathentry kind="src" path="src/main/web"/>
+	<classpathentry kind="src" path="src/main/auth"/>
+	<classpathentry kind="src" path="src/main/user"/>
+	<classpathentry kind="src" path="src/main/sentinel"/>
+	<classpathentry kind="src" path="src/main/org"/>
+	<classpathentry kind="src" path="src/main/attachment"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

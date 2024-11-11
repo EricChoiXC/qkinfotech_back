@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+<class name="com.qkinfotech.core.log.SysLog" table="sys_log">
+    <id name="fId" type="string" column="f_id" length="36"/>
+    <property name="fNodeName" column="f_node_name" length="32" type="string"/>
+    <property name="fTimestamp" column="f_timestamp" type="date"/>
+    <property name="fClassName" column="f_class_name" length="256" type="string"/>
+    <property name="fMethodName" column="f_method_name" length="128" type="string"/>
+    <property name="fLineNo" column="f_line_no" type="integer"/>
+    <property name="fThreadName" column="f_thread_name" length="128" type="string"/>
+    <property name="fLevel" column="f_level" length="16" type="string"/>
+    <property name="fLoggerName" column="f_logger_name" length="256" type="string"/>
+    <property name="fMessage" column="f_message" type="text"/>
+    <property name="fException" column="f_exception" type="text"/>
+    <property name="fModifyTime" column="f_modify_time" type="date"/>
+    <property name="fCreateTime" column="f_create_time" type="date"/>
+</class>
+</hibernate-mapping>

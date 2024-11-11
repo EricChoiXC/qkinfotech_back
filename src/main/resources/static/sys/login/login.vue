@@ -1,0 +1,80 @@
+<template>
+	<div class="login-container">
+		<h2>登录页面</h2>
+		<form method="post">
+			<p v-if="msg.length > 0" v-text="msg"></p>
+			<div class="form-group">
+				<label for="username">用户名:</label>
+				<input type="text" id="username" name="username" required>
+			</div>
+
+			<div class="form-group">
+				<label for="password">密码:</label>
+				<input type="password" id="password" name="password" required>
+			</div>
+
+			<div class="form-group">
+				<input type="submit" value="Log In">
+			</div>
+		</form>
+	</div>
+</template>
+
+<script>
+	export default {
+		name: 'sys.login',
+		data() {
+			return {
+				msg: document.request.errmsg?? ""
+			};
+		}
+	}
+</script>
+
+<style>
+	body {
+		font-family: Arial, sans-serif;
+		background-color: #f4f4f4;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+	}
+
+	.login-container {
+		background-color: #fff;
+		padding: 20px;
+		border-radius: 5px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.form-group {
+		margin-bottom: 15px;
+	}
+
+	.form-group label {
+		display: block;
+		margin-bottom: 5px;
+	}
+
+	.form-group input {
+		width: 100%;
+		padding: 10px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		box-sizing: border-box;
+		/* ensures padding doesn't affect width */
+	}
+
+	.form-group input[type="submit"] {
+		background-color: #5c79b8;
+		color: white;
+		cursor: pointer;
+	}
+
+	.form-group input[type="submit"]:hover {
+		background-color: #4cae97;
+	}
+</style>
