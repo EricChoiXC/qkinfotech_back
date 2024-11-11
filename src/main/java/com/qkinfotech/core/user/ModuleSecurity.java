@@ -110,28 +110,32 @@ public class ModuleSecurity extends BaseModule implements ApplicationRunner {
 
 		System.out.println(" =======================  select orgPerson 1719fc62b8032731920f43c48f5a7f47  ==============================");
 		OrgPerson person2 = orgPersonService.getById("1719fc62b8032731920f43c48f5a7f47");
-		System.out.println(person2.getfName());
+		if (person2 != null) {
+
+		}
 		System.out.println(" =======================  select orgPerson 1719fc62b8032731920f43c48f5a7f47 end  ==============================");
 
 
 		System.out.println(" =======================  select orgElement 1719fc62b8032731920f43c48f5a7f47  ==============================");
 		OrgElement ele = orgElementService.getById("1719fc62b8032731920f43c48f5a7f47");
-		try {
-			if (ele instanceof OrgPerson person) {
-				System.out.println("element instanceof OrgPerson person");
-				System.out.println(person.getfId());
-				System.out.println("fEkpUserType : " + person.getfEkpUserType());
+		if (ele != null) {
+			try {
+				if (ele instanceof OrgPerson person) {
+					System.out.println("element instanceof OrgPerson person");
+					System.out.println(person.getfId());
+					System.out.println("fEkpUserType : " + person.getfEkpUserType());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			System.out.println("直接转换");
-			System.out.println(ele.getfId());
-			System.out.println("fEkpUserType : " + ((OrgPerson) ele).getfEkpUserType());
-			System.out.println(ele.getfNamePinYin());
-		} catch (Exception e) {
-			e.printStackTrace();
+			try {
+				System.out.println("直接转换");
+				System.out.println(ele.getfId());
+				System.out.println("fEkpUserType : " + ((OrgPerson) ele).getfEkpUserType());
+				System.out.println(ele.getfNamePinYin());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		System.out.println(" =======================  select orgElement 1719fc62b8032731920f43c48f5a7f47 end  ==============================");
 
