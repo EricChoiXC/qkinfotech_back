@@ -22,18 +22,6 @@ import lombok.Setter;
 @SimpleModel(url = "org/group/cate")
 public class OrgGroupCate extends BaseEntity {
 	
-	public OrgGroupCate() {
-		super.getfId();
-	}
-
-	public OrgGroupCate(String fId) {
-		if (StringUtil.isNotNull(fId)) {
-			setfId(fId);
-		} else {
-			super.getfId();
-		}
-	}
-	
 	@JoinColumn(name = "f_owner_id")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private OrgElement fOwner;

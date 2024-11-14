@@ -95,7 +95,7 @@ public class projectMainController<T extends BaseEntity> {
     @Autowired(required = false)
     protected List<IEntityExtension> extensions;
 
-    protected Class<AppsProjectMain> modelClass;
+    protected Class<AppsProjectMain> modelClass = AppsProjectMain.class;
 
     protected String chnName = "中国";
 

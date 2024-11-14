@@ -54,7 +54,7 @@ public class AppsShortcutsController<T extends BaseEntity> {
     @Autowired(required = false)
     protected List<IEntityExtension> extensions;
 
-    protected Class<AppsShortcuts> modelClass;
+    protected Class<AppsShortcuts> modelClass = AppsShortcuts.class;
 
     @Resource
     protected SimpleService<AppsShortcuts> appsShortcutsService;

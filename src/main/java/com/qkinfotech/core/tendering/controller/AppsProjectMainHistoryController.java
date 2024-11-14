@@ -47,7 +47,7 @@ public class AppsProjectMainHistoryController<T extends BaseEntity>{
     @Autowired(required = false)
     protected List<IEntityExtension> extensions;
 
-    protected Class<AppsProjectMainHistory> modelClass;
+    protected Class<AppsProjectMainHistory> modelClass = AppsProjectMainHistory.class;
 
     private TokenUtil tokenUtil;
 

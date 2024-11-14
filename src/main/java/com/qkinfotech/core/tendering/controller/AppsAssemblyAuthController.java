@@ -55,7 +55,7 @@ public class AppsAssemblyAuthController<T extends BaseEntity> {
     @Autowired(required = false)
     protected List<IEntityExtension> extensions;
 
-    protected Class<AppsAssemblyAuth> modelClass;
+    protected Class<AppsAssemblyAuth> modelClass = AppsAssemblyAuth.class;
     @Autowired
     protected SimpleService<AppsAssemblyAuth> appsAssemblyAuthService;
 
