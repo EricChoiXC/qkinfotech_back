@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.qkinfotech.core.mvc.SimpleService;
+import com.qkinfotech.util.OrganizationUtil;
 import com.qkinfotech.util.SpringUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +50,8 @@ public class QueryBuilder<T> {
 				// 有Acl的情况下，查询条件需要增加
 				// 用户相关组织架构有配置到read或all权限
 				SimpleService aclService = (SimpleService) SpringUtil.getContext().getBean(aclModelName + "Service");
-
+				OrganizationUtil organizationUtil = new OrganizationUtil();
+				organizationUtil.getOrgElements("");
 
 			}
 

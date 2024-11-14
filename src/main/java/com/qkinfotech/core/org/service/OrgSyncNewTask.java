@@ -62,13 +62,13 @@ public class OrgSyncNewTask implements ITask {
             //4.3 同步供应商
             log.write(" sync supplier ");
             logger.info(" sync supplier ");
-            Map<String, JSONObject> supplierMap = scroll(" select * from km_supplier_person order by doc_create_time desc ", new String[]{}, "fd_id");
-            orgSyncService.syncSupplier(supplierMap);
+            //Map<String, JSONObject> supplierMap = scroll(" select * from km_supplier_person order by doc_create_time desc ", new String[]{}, "fd_id");
+            //orgSyncService.syncSupplier(supplierMap);
             //4.4 同步专家
             log.write(" sync expert ");
             logger.info(" sync expert ");
-            Map<String, JSONObject> expertMap = scroll(" select * from km_expert_person order by doc_create_time desc ", new String[]{}, "fd_id");
-            orgSyncService.syncExpert(expertMap);
+            //Map<String, JSONObject> expertMap = scroll(" select * from km_expert_person order by doc_create_time desc ", new String[]{}, "fd_id");
+            //orgSyncService.syncExpert(expertMap);
 
             //5.同步群组
             log.write(" sync group ");

@@ -62,8 +62,9 @@ public class SysUserService extends SimpleService<SysUser>{
 			public Predicate toPredicate(Root<SysUser> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				
 				Predicate predicate = cb.equal(root.get("fLoginName"), loginName);
+				Predicate predicate1 = cb.equal(root.get("fDisabled"), false);
 
-				return query.where(predicate).getRestriction();
+				return query.where(cb.and(predicate, predicate1)).getRestriction();
 			}
 		};
 		

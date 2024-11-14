@@ -12,6 +12,7 @@ import com.qkinfotech.util.DESEncrypt;
 import com.qkinfotech.util.StringUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -102,7 +103,7 @@ public class OrgSyncService {
             if (json.containsKey("updated") && json.getBoolean("updated")) {
 
             } else {
-                OrgCompany orgCompany = new OrgCompany(json.getString(key));
+                OrgCompany orgCompany = new OrgCompany(key);
                 updateCompany(orgCompany, json);
                 count++;
                 if (count >= maxCount) {
@@ -145,6 +146,7 @@ public class OrgSyncService {
         orgCompany.setfNo(json.getString("fd_no"));
         orgCompany.setfCode(json.getString("fd_no"));
         orgCompany.setfValid(json.getBooleanValue("fd_is_available", false));
+        orgCompany.setfType(OrgElement.TYPE_COMPANY);
         if (orgCompany.getfValid()) {
             orgCompany.setfHibernateIds(orgCompany.getfId());
         } else {
@@ -183,7 +185,7 @@ public class OrgSyncService {
             if (json.containsKey("updated") && json.getBoolean("updated")) {
 
             } else {
-                OrgDept orgDept = new OrgDept(json.getString(key));
+                OrgDept orgDept = new OrgDept(key);
                 updateDept(orgDept, json);
                 count++;
                 if (count >= maxCount) {
@@ -231,6 +233,7 @@ public class OrgSyncService {
         orgDept.setfCode(json.getString("fd_no"));
         orgDept.setfNo(json.getString("fd_no"));
         orgDept.setfValid(json.getBooleanValue("fd_is_available", false));
+        orgDept.setfType(OrgElement.TYPE_DEPT);
         if (orgDept.getfValid()) {
             orgDept.setfHibernateIds(orgDept.getfId());
         } else {
@@ -293,6 +296,7 @@ public class OrgSyncService {
         orgPost.setfCode(json.getString("fd_no"));
         orgPost.setfNo(json.getString("fd_no"));
         orgPost.setfValid(json.getBoolean("fd_is_available"));
+        orgPost.setfType(OrgElement.TYPE_POST);
         if (json.containsKey("fd_parentid") && json.get("fd_parentid") != null) {
             OrgElement element = orgElementService.getById(json.getString("fd_parentid"));
             if (element != null) {
@@ -346,6 +350,9 @@ public class OrgSyncService {
 
         // 无效数据
         for (String userId : userIds) {
+            if (userId.equals(Strings.repeat("0", 32))) {
+                continue;
+            }
             SysUser sysUser = sysUserService.getById(userId);
             sysUser.setfDisabled(true);
             sysUserService.save(sysUser);
@@ -432,15 +439,16 @@ public class OrgSyncService {
         orgPerson.setfOrder(eleJson.getString("fd_order"));
         orgPerson.setfCode(eleJson.getString("fd_no"));
         orgPerson.setfNo(eleJson.getString("fd_no"));
-        orgPerson.setfEkpUserType(personJson.getString("fd_ekp_user_type"));
-        orgPerson.setfSupplierType(personJson.getString("fd_supplier_type"));
-        orgPerson.setfSupplierCode(personJson.getString("fd_supplier_code"));
-        orgPerson.setfSupplierLeader(personJson.getString("fd_supplier_leader"));
-        orgPerson.setfSupplierContacts(personJson.getString("fd_supplier_contacts"));
-        orgPerson.setfExpertCode(personJson.getString("fd_expert_code"));
-        orgPerson.setfExpertBankNum(personJson.getString("fd_expert_bank_num"));
+//        orgPerson.setfEkpUserType(personJson.getString("fd_ekp_user_type"));
+//        orgPerson.setfSupplierType(personJson.getString("fd_supplier_type"));
+//        orgPerson.setfSupplierCode(personJson.getString("fd_supplier_code"));
+//        orgPerson.setfSupplierLeader(personJson.getString("fd_supplier_leader"));
+//        orgPerson.setfSupplierContacts(personJson.getString("fd_supplier_contacts"));
+//        orgPerson.setfExpertCode(personJson.getString("fd_expert_code"));
+//        orgPerson.setfExpertBankNum(personJson.getString("fd_expert_bank_num"));
         orgPerson.setfValid(eleJson.getBooleanValue("fd_is_available", false));
-        orgPerson.setfUpdateId(personJson.getString("fd_update_id"));
+        orgPerson.setfType(OrgElement.TYPE_PERON);
+//        orgPerson.setfUpdateId(personJson.getString("fd_update_id"));
         if (StringUtil.isNotNull(eleJson.getString("fd_parentid"))) {
             String parentId = eleJson.getString("fd_parentid");
             OrgDept dept = orgDeptService.getById(parentId);
@@ -500,6 +508,7 @@ public class OrgSyncService {
         orgGroup.setfOrder(groupJson.getString("fd_order"));
         orgGroup.setfCode(groupJson.getString("fd_no"));
         orgGroup.setfValid(groupJson.getBooleanValue("fd_is_available", false));
+        orgGroup.setfType(OrgElement.TYPE_GROUP);
         orgGroupService.save(orgGroup);
     }
 
