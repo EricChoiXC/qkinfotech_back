@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.qkinfotech.core.org.model.OrgElement;
 import com.qkinfotech.core.org.model.OrgPerson;
+import com.qkinfotech.core.sys.base.model.TableFirst;
+import com.qkinfotech.core.sys.base.model.TableSecond;
 import com.qkinfotech.core.sys.log.model.SysLogChild;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,12 @@ public class ModuleSecurity extends BaseModule implements ApplicationRunner {
 
 	@Autowired
 	private SimpleService<OrgElement> orgElementService;
+
+	@Autowired
+	private SimpleService<TableFirst> tableFirstService;
+
+	@Autowired
+	private SimpleService<TableSecond> tableSecondService;
 
 	private SysAuthority addAuthority(SysAuthority role) {
 		if (sysAuthorityService.getById(role.getfId()) == null) {
@@ -108,36 +116,19 @@ public class ModuleSecurity extends BaseModule implements ApplicationRunner {
 			System.out.println(" =======================  delete sysLogChild end  ==============================");
 		}
 
-		System.out.println(" =======================  select orgPerson 1719fc62b8032731920f43c48f5a7f47  ==============================");
-		OrgPerson person2 = orgPersonService.getById("1719fc62b8032731920f43c48f5a7f47");
-		if (person2 != null) {
 
-		}
-		System.out.println(" =======================  select orgPerson 1719fc62b8032731920f43c48f5a7f47 end  ==============================");
+		System.out.println("========================== create tableFirst, tableSecond ==================================");
 
+		TableFirst tableFirst = new TableFirst();
+		tableFirst.setfId(String.valueOf(now.getTime()));
+		tableFirst.setfName(String.valueOf(now.getTime()));
+		tableFirstService.save(tableFirst);
+		TableSecond tableSecond = new TableSecond();
+		tableSecond.setfId(String.valueOf(now.getTime()));
+		tableSecond.setfName(String.valueOf(now.getTime()));
+		tableSecondService.save(tableSecond);
 
-		System.out.println(" =======================  select orgElement 1719fc62b8032731920f43c48f5a7f47  ==============================");
-		OrgElement ele = orgElementService.getById("1719fc62b8032731920f43c48f5a7f47");
-		if (ele != null) {
-			try {
-				if (ele instanceof OrgPerson person) {
-					System.out.println("element instanceof OrgPerson person");
-					System.out.println(person.getfId());
-					System.out.println("fEkpUserType : " + person.getfEkpUserType());
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			try {
-				System.out.println("直接转换");
-				System.out.println(ele.getfId());
-				System.out.println("fEkpUserType : " + ((OrgPerson) ele).getfEkpUserType());
-				System.out.println(ele.getfNamePinYin());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		System.out.println(" =======================  select orgElement 1719fc62b8032731920f43c48f5a7f47 end  ==============================");
+		System.out.println("========================== create finish ==================================");
 
 
 	}

@@ -3,6 +3,8 @@ package com.qkinfotech.core.mvc.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qkinfotech.core.mvc.SimpleService;
+import com.qkinfotech.util.SpringUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,6 +34,25 @@ public class QueryBuilder<T> {
 		
 		if (body.containsKey("authorization")) {
 			qb.authorization = body.getBooleanValue("authorization");
+
+			boolean hasAcl = false;
+			// 判断是否存在Acl
+			String aclModelName = modelClass.getClass().getName() + "Acl";
+			try {
+				Class<?> aclClass = Class.forName(aclModelName);
+				aclClass.newInstance();
+				hasAcl = true;
+			} catch (Exception e) {
+
+			}
+			if (hasAcl) {
+				// 有Acl的情况下，查询条件需要增加
+				// 用户相关组织架构有配置到read或all权限
+				SimpleService aclService = (SimpleService) SpringUtil.getContext().getBean(aclModelName + "Service");
+
+
+			}
+
 		}
 		
 		if(body.containsKey("sort")) {

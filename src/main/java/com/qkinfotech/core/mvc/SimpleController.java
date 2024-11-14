@@ -12,7 +12,9 @@ import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alicp.jetcache.Cache;
 import com.qkinfotech.core.app.config.JetcacheConfig;
+import com.qkinfotech.core.sys.base.service.PluginService;
 import com.qkinfotech.util.EntityUtil;
+import com.qkinfotech.util.SpringUtil;
 import com.qkinfotech.util.StringUtil;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
@@ -25,9 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -49,7 +49,6 @@ import com.qkinfotech.core.mvc.util.QueryBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @DependsOn("entityManager")
@@ -146,12 +145,12 @@ public class SimpleController<T extends BaseEntity> {
     @ResponseBody
     public void delete() throws Exception {
         List<String> fId = new ArrayList<>();
+        JSONObject data = getPostData("delete");
         String[] v = request.getParameterValues("fId");
         if (v != null) {
             fId.addAll(Arrays.asList(v));
         }
         if (fId.isEmpty()) {
-            JSONObject data = getPostData("delete");
             if (data != null) {
                 List<String> d = data.getList("fId", String.class);
                 if (d != null) {
@@ -169,6 +168,20 @@ public class SimpleController<T extends BaseEntity> {
             }
 
         }
+
+        // 遍历调用所有pluginService的deleteAll方法
+        JSONObject pluginValue = data.getJSONObject("#pluginValue");
+        Map<String, PluginService> pluginServiceMap = getPluginServices();
+        JSONObject deleteAllJson = new JSONObject();
+        deleteAllJson.put("beanName", context.getBeanNamesForType(service.getClass())[0]);
+        deleteAllJson.putAll(pluginValue);
+        for (PluginService pluginService : pluginServiceMap.values()) {
+            try {
+                pluginService.deleteAll(ids, deleteAllJson);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         service.delete(StringUtils.toStringArray(ids));
         result.ok();
     }
@@ -185,6 +198,38 @@ public class SimpleController<T extends BaseEntity> {
             T target = json2bean.toBean(body, service.getEntityClass());
 
             service.save(target);
+            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+            def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+            def.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+
+            boolean isUpdate = false;
+            TransactionStatus status = transactionManager.getTransaction(def);
+            try {
+                T model = service.getById(target.getfId());
+                if (model != null) {
+                    isUpdate = true;
+                }
+            } catch (RuntimeException ex) {
+                throw ex;
+            } finally {
+                transactionManager.rollback(status);
+            }
+
+            JSONObject pluginValue = body.getJSONObject("#pluginValue");
+            for (String key : body.keySet()) {
+                if (key.startsWith("$")) {
+                    try {
+                        PluginService pluService = SpringUtil.getContext().getBean(key.replace("$", ""), PluginService.class);
+                        JSONObject parameter = new JSONObject();
+                        parameter.put("beanName", context.getBeanNamesForType(service.getClass())[0]);
+                        parameter.putAll(pluginValue);
+                        parameter.put("parameter", body.get(key));
+                        pluService.save(target, parameter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
             result.ok();
 
@@ -654,6 +699,15 @@ public class SimpleController<T extends BaseEntity> {
         JSONObject json = new JSONObject();
         json.put("result", columns);
         result.from(json);
+    }
+
+    /**
+     * 获取所有PluginService的bean
+     * @return
+     */
+    public Map<String, PluginService> getPluginServices() {
+        Map<String, PluginService> pluginServices = context.getBeansOfType(PluginService.class);
+        return pluginServices;
     }
 
 }
