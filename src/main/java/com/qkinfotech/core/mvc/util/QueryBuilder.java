@@ -48,6 +48,11 @@ public class QueryBuilder<T> {
 		try {
 			Class<?> aclClass = Class.forName(aclModelName);
 			aclClass.newInstance();
+			hasAcl = true;
+		} catch (Exception e) {
+
+		}
+		if (hasAcl) {
 			// 有Acl的情况下，查询条件需要增加
 			// 用户相关组织架构有配置到read或all权限
 			String upperBeanName = aclModelName.substring(aclModelName.lastIndexOf(".") + 1) + "Service";
@@ -90,8 +95,6 @@ public class QueryBuilder<T> {
 			JSONObject query = new JSONObject();
 			query.put("and", and);
 			body.put("query", query);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		if(body.containsKey("sort")) {
