@@ -246,6 +246,12 @@ public class SimpleController<T extends BaseEntity> {
         try {
             JSONObject body = getPostData("list");
 
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("id")) {
+                    body.put("userId", cookie.getValue());
+                }
+            }
             QueryBuilder<T> qb = QueryBuilder.parse(modelClass, body);
 
             Object[] auths = getAuths();
