@@ -45,12 +45,11 @@ public class OrgGroup extends OrgElement {
 	@ManyToOne(fetch=FetchType.LAZY)
 	private OrgGroupCate fGroupCate;
 
-	private String fFullName;
 	public String getfFullName() {
-		if (getfOwner() != null) {
-			return getfOwner().getfName();
+		if (getfGroupCate() != null) {
+			return getfGroupCate().getfFullName() + "-" + getfName();
 		}
-		return "";
+		return getfName();
 	}
 
 }

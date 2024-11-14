@@ -21,6 +21,18 @@ import lombok.Setter;
 @Table(name = "org_group_cate")
 @SimpleModel(url = "org/group/cate")
 public class OrgGroupCate extends BaseEntity {
+
+	public OrgGroupCate() {
+		getfId();
+	}
+
+	public OrgGroupCate(String fId) {
+		if (StringUtil.isNotNull(fId)) {
+			setfId(fId);
+		} else {
+			getfId();
+		}
+	}
 	
 	@JoinColumn(name = "f_owner_id")
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -44,5 +56,12 @@ public class OrgGroupCate extends BaseEntity {
 
 	@Column(name = "f_order", length = 200)
     private Integer fdOrder;
-    
+
+
+	public String getfFullName() {
+		if (getfParent() != null) {
+			return getfParent().getfFullName() + "-" + getfName();
+		}
+		return getfName();
+	}
 }
