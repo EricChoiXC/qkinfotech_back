@@ -55,7 +55,7 @@ public class OrgGroupCate extends BaseEntity {
     private Date fAlterTime = new Date();
 
 	@Column(name = "f_order", length = 200)
-    private Integer fdOrder;
+    private Integer fOrder;
 
 
 	public String getfFullName() {

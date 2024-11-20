@@ -1225,7 +1225,7 @@ public class OrgSyncTask implements ITask {
 			if (syncMap.containsKey(fId)) {
 				JSONObject json = syncMap.get(fId);
 				cate.setfKeyword(json.getString("fd_keyword"));
-				cate.setFdOrder(json.getInteger("fd_order"));
+				cate.setfOrder(json.getInteger("fd_order"));
 				cate.setfParent(groupCateMap.get(json.getString("fd_parentid")));
 				cate.setfName(json.getString("fd_name"));
 				orgGroupCateService.save(cate);
