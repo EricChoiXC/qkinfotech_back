@@ -119,16 +119,25 @@ public class ModuleSecurity extends BaseModule implements ApplicationRunner {
 
 		System.out.println("========================== create tableFirst, tableSecond ==================================");
 
-		TableFirst tableFirst = new TableFirst();
+		/*TableFirst tableFirst = new TableFirst();
 		tableFirst.setfId(String.valueOf(now.getTime()));
 		tableFirst.setfName(String.valueOf(now.getTime()));
 		tableFirstService.save(tableFirst);
 		TableSecond tableSecond = new TableSecond();
 		tableSecond.setfId(String.valueOf(now.getTime()));
 		tableSecond.setfName(String.valueOf(now.getTime()));
-		tableSecondService.save(tableSecond);
+		tableSecondService.save(tableSecond);*/
 
 		System.out.println("========================== create finish ==================================");
+
+
+
+		/*OrgElement element = orgElementService.getById("170f5cb559dbe06a6404c6b421aa5810");
+		element.setfType(OrgElement.TYPE_DEPT);
+		element.setfAuths(null);
+		orgElementService.save(element);*/
+
+
 
 
 	}

@@ -2,18 +2,21 @@ package com.qkinfotech.core.org.controller;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.qkinfotech.core.mvc.SimpleResult;
 import com.qkinfotech.core.mvc.SimpleService;
-import com.qkinfotech.core.org.model.OrgElement;
-import com.qkinfotech.core.org.model.OrgGroup;
-import com.qkinfotech.core.org.model.OrgGroupMember;
+import com.qkinfotech.core.mvc.util.Bean2Json;
+import com.qkinfotech.core.mvc.util.Json2Bean;
+import com.qkinfotech.core.org.model.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -27,7 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping
@@ -43,10 +49,22 @@ public class OrgController {
     private SimpleService<OrgElement> orgElementService;
 
     @Autowired
+    private SimpleService<OrgPerson> orgPersonService;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Autowired
     private HttpServletResponse response;
+
+    @Autowired
+    protected SimpleResult result;
+
+    @Autowired
+    protected Bean2Json bean2json;
+
+    @Autowired
+    protected Json2Bean json2bean;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -114,6 +132,59 @@ public class OrgController {
         }
     }
 
+    @PostMapping("/orgGroup/list")
+    @ResponseBody
+    public void orgGroupList() throws Exception {
+        /*群组列出方法，针对部门群组，公共群组，公司群组进行特定查询的list调用*/
+        JSONObject body = getPostData();
+        String key = body.getString("fKey");
+        String userId = "";
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("id")) {
+                userId = cookie.getValue();
+            }
+        }
+        OrgPerson person = orgPersonService.getById(userId);
+        if (person != null) {
+            List<OrgGroup> list = new ArrayList<>();
+            if ("dept".equals(key)) {
+                Set<OrgDept> deptSet = getPersonDept(person);
+                Specification<OrgGroup> specification = new Specification<OrgGroup>() {
+                    @Override
+                    public Predicate toPredicate(Root<OrgGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fOwner").get("fId"));
+                        CriteriaBuilder.In in2 = criteriaBuilder.in(root.get("fGroupCate").get("fOwner").get("fId"));
+                        for (OrgDept dept : deptSet) {
+                            in.value(dept.getfId());
+                            in2.value(dept.getfId());
+                        }
+                        return criteriaBuilder.or(in, in2);
+                    }
+                };
+                list = orgGroupService.findAll(specification);
+            } else if ("company".equals(key)) {
+                Set<OrgCompany> companySet = getPersonCompany(person);
+                Specification<OrgGroup> specification = new Specification<OrgGroup>() {
+                    @Override
+                    public Predicate toPredicate(Root<OrgGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fOwner").get("fId"));
+                        CriteriaBuilder.In in2 = criteriaBuilder.in(root.get("fGroupCate").get("fOwner").get("fId"));
+                        for (OrgCompany company : companySet) {
+                            in.value(company.getfId());
+                            in2.value(company.getfId());
+                        }
+                        return criteriaBuilder.or(in, in2);
+                    }
+                };
+                list = orgGroupService.findAll(specification);
+            }
+            JSONArray listJson = new JSONArray();
+            list.forEach(orgGroup -> listJson.add(bean2json.toJson(orgGroup)));
+            result.from(listJson);
+        }
+    }
+
     private JSONObject getPostData() {
         JSONObject data = new JSONObject();
         try {
@@ -133,5 +204,34 @@ public class OrgController {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         return data;
+    }
+
+    public Set<OrgDept> getPersonDept(OrgPerson person) {
+        Set<OrgDept> deptSet = new HashSet<>();
+        if (person != null && person.getfParent() != null) {
+            OrgDept curDept = person.getfParent();
+            deptSet.add(curDept);
+            while(curDept.getfParent() != null) {
+                curDept = curDept.getfParent();
+                deptSet.add(curDept);
+            }
+        }
+        return deptSet;
+    }
+
+    public Set<OrgCompany> getPersonCompany(OrgPerson person) {
+        Set<OrgCompany> companySet = new HashSet<>();
+        if (person != null && person.getfParent() != null) {
+            OrgDept curDept = person.getfParent();
+            while(curDept.getfParent() != null) {
+                curDept = curDept.getfParent();
+            }
+            OrgCompany curCompany = curDept.getfCompany();
+            while(curCompany != null) {
+                companySet.add(curCompany);
+                curCompany = curCompany.getfParent();
+            }
+        }
+        return companySet;
     }
 }

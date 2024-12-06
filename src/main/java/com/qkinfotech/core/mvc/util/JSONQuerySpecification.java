@@ -86,13 +86,13 @@ public class JSONQuerySpecification<T> {
 		case "ends":
 			return criteriaBuilder.like((Expression<String>) field, "%" + getValue(field, data));
 		case "null":
-			return criteriaBuilder.isNull(root.get(data.toString()));
+			return criteriaBuilder.isNull(field);
 		case "notnull":
-			return criteriaBuilder.isNotNull(root.get(data.toString()));
+			return criteriaBuilder.isNotNull(field);
 		case "blank":
-			return criteriaBuilder.or(criteriaBuilder.isNull(root.get(data.toString())), criteriaBuilder.equal(root.get(data.toString()), ""));
+			return criteriaBuilder.or(criteriaBuilder.isNull(field), criteriaBuilder.equal(field, ""));
 		case "notblank":
-			return criteriaBuilder.and(criteriaBuilder.isNotNull(root.get(data.toString())), criteriaBuilder.notEqual(root.get(data.toString()), ""));
+			return criteriaBuilder.and(criteriaBuilder.isNotNull(field), criteriaBuilder.notEqual(field, ""));
 		case "in":
 			if (data instanceof JSONObject) {
 				Comparable comp = getValue(field, data);

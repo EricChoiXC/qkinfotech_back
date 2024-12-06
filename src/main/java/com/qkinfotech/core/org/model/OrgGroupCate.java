@@ -1,9 +1,7 @@
 package com.qkinfotech.core.org.model;
 
-import java.util.Date;
-
-import com.qkinfotech.core.mvc.BaseEntity;
 import com.qkinfotech.core.mvc.SimpleModel;
+import com.qkinfotech.core.sys.base.model.BaseCategory;
 import com.qkinfotech.util.StringUtil;
 
 import jakarta.persistence.Column;
@@ -20,7 +18,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "org_group_cate")
 @SimpleModel(url = "org/group/cate")
-public class OrgGroupCate extends BaseEntity {
+public class OrgGroupCate extends BaseCategory {
 
 	public OrgGroupCate() {
 		getfId();
@@ -42,21 +40,11 @@ public class OrgGroupCate extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private OrgGroupCate fParent;
 	
-	@Column(name = "f_name", length = 200, nullable = false)
-	private String fName;
-
 	@Column(name = "f_key_word", length = 200)
     private String fKeyword;
 
-	@Column(name = "f_create_time", length = 200)
-    private Date fCreateTime = new Date();
-
-	@Column(name = "f_alter_time", length = 200)
-    private Date fAlterTime = new Date();
-
 	@Column(name = "f_order", length = 200)
     private Integer fOrder;
-
 
 	public String getfFullName() {
 		if (getfParent() != null) {

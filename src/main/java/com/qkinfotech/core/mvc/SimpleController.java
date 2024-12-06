@@ -10,6 +10,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.fastjson2.JSONArray;
 import com.alicp.jetcache.Cache;
 import com.qkinfotech.core.app.config.JetcacheConfig;
 import com.qkinfotech.core.sys.base.service.PluginService;
@@ -292,6 +293,34 @@ public class SimpleController<T extends BaseEntity> {
                 });
                 result.from(out);
             }
+        } catch (Exception e) {
+            logger.error(String.valueOf(request.getRequestURL()));
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @RequestMapping("/listAll")
+    @ResponseBody
+    public void listAll() throws Exception {
+        try {
+            JSONObject body = getPostData("listAll");
+
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("id")) {
+                    body.put("userId", cookie.getValue());
+                }
+            }
+            QueryBuilder<T> qb = QueryBuilder.parse(modelClass, body);
+
+            Object[] auths = getAuths();
+
+            List<T> data = service.findAll(qb.specification(), qb.sort());
+
+            JSONArray listJson = new JSONArray();
+            data.forEach(e -> listJson.add(bean2json.toJson(e)));
+            result.from(listJson);
         } catch (Exception e) {
             logger.error(String.valueOf(request.getRequestURL()));
             e.printStackTrace();
