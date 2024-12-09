@@ -15,21 +15,30 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseCategory extends BaseEntity {
 
+    /*类名*/
     @Column
     private String fName;
 
+    /*类型值*/
     @Column
     private String fType;
 
+    /*创建时间*/
     @Column
     private Date fCreateTime;
 
+    /*修改时间*/
     @Column
     private Date fAlterTime;
 
+    /*创建人*/
     @JoinColumn(name = "f_creator_id")
     @ManyToOne
     private OrgElement fCreator;
+
+    /*有效性*/
+    @Column
+    private Boolean fAvailable = true;
 
     public String getfName() {
         return fName;
@@ -69,5 +78,13 @@ public class BaseCategory extends BaseEntity {
 
     public void setfCreator(OrgElement fCreator) {
         this.fCreator = fCreator;
+    }
+
+    public Boolean getfAvailable() {
+        return fAvailable;
+    }
+
+    public void setfAvailable(Boolean fAvailable) {
+        this.fAvailable = fAvailable;
     }
 }

@@ -153,31 +153,53 @@ public class OrgController {
                 Specification<OrgGroup> specification = new Specification<OrgGroup>() {
                     @Override
                     public Predicate toPredicate(Root<OrgGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fOwner").get("fId"));
-                        CriteriaBuilder.In in2 = criteriaBuilder.in(root.get("fGroupCate").get("fOwner").get("fId"));
+                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fGroupCate").get("fOwner").get("fId"));
                         for (OrgDept dept : deptSet) {
                             in.value(dept.getfId());
-                            in2.value(dept.getfId());
                         }
-                        return criteriaBuilder.or(in, in2);
+                        Predicate nu = criteriaBuilder.isNull(root.get("fOwner"));
+                        return criteriaBuilder.and(in, nu);
                     }
                 };
                 list = orgGroupService.findAll(specification);
+                Specification<OrgGroup> specification2 = new Specification<OrgGroup>() {
+                    @Override
+                    public Predicate toPredicate(Root<OrgGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fOwner").get("fId"));
+                        for (OrgDept dept : deptSet) {
+                            in.value(dept.getfId());
+                        }
+                        return in;
+                    }
+                };
+                List<OrgGroup> list2 = orgGroupService.findAll(specification2);
+                list.addAll(list2);
             } else if ("company".equals(key)) {
                 Set<OrgCompany> companySet = getPersonCompany(person);
                 Specification<OrgGroup> specification = new Specification<OrgGroup>() {
                     @Override
                     public Predicate toPredicate(Root<OrgGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fOwner").get("fId"));
-                        CriteriaBuilder.In in2 = criteriaBuilder.in(root.get("fGroupCate").get("fOwner").get("fId"));
+                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fGroupCate").get("fOwner").get("fId"));
                         for (OrgCompany company : companySet) {
                             in.value(company.getfId());
-                            in2.value(company.getfId());
                         }
-                        return criteriaBuilder.or(in, in2);
+                        Predicate nu = criteriaBuilder.isNull(root.get("fOwner"));
+                        return criteriaBuilder.and(in, nu);
                     }
                 };
                 list = orgGroupService.findAll(specification);
+                Specification<OrgGroup> specification2 = new Specification<OrgGroup>() {
+                    @Override
+                    public Predicate toPredicate(Root<OrgGroup> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                        CriteriaBuilder.In in = criteriaBuilder.in(root.get("fOwner").get("fId"));
+                        for (OrgCompany company : companySet) {
+                            in.value(company.getfId());
+                        }
+                        return in;
+                    }
+                };
+                List<OrgGroup> list2 = orgGroupService.findAll(specification2);
+                list.addAll(list2);
             }
             JSONArray listJson = new JSONArray();
             list.forEach(orgGroup -> listJson.add(bean2json.toJson(orgGroup)));
